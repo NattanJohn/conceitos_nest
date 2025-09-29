@@ -1,6 +1,7 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { User } from '../domain/users.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { User } from '../infrastructure/entities/user.entity';
 import { UpdateUserDto } from '../presentation/dto/update-user.dto';
+import { CreateUserDto } from '../presentation/dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -8,12 +9,12 @@ export class UsersService {
 
   findAll() {
     if (this.users.length === 0) {
-      throw new NotAcceptableException('Nenhum usuário cadastrado');
+      throw new NotFoundException('Nenhum usuário cadastrado');
     }
     return this.users;
   }
-  create(user: { name: string; email: string }) {
-    const newUser = { id: Date.now(), ...user };
+  create(user: CreateUserDto): User {
+    const newUser: User = { id: Date.now(), ...user };
     this.users.push(newUser);
     return newUser;
   }
@@ -21,7 +22,7 @@ export class UsersService {
   findOne(id: number) {
     const user = this.users.find((user) => user.id === id);
     if (!user) {
-      throw new NotAcceptableException(`Usuario ${id} nao encontrado`);
+      throw new NotFoundException(`Usuario nao encontrado`);
     }
     return user;
   }
@@ -30,5 +31,17 @@ export class UsersService {
     const user = this.findOne(id);
     Object.assign(user, updateUserDto);
     return user;
+  }
+
+  remove(id: number): User {
+    const index = this.users.findIndex((user) => user.id === id);
+
+    if (index === -1) {
+      throw new NotFoundException(`Usuário não encontrado`);
+    }
+
+    const deletedUser = this.users[index];
+    this.users.splice(index, 1);
+    return deletedUser;
   }
 }

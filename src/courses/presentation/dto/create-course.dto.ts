@@ -1,21 +1,20 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateCourseDto {
   @IsString()
-  @IsNotEmpty({ message: 'O título é obrigatório' })
-  readonly title: string;
+  @IsNotEmpty()
+  title: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'A descrição é obrigatória' })
-  readonly description: string;
+  @IsNotEmpty()
+  description: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'A thumbnail é obrigatória' })
-  readonly thumbnail: string;
+  thumbnail?: string;
 
-  @IsNumber()
-  readonly instructorId: number;
+  @IsUUID()
+  instructorId: string;
 
-  @IsNumber()
-  readonly categoryId: number;
+  @IsUUID()
+  categoryId: string;
 }

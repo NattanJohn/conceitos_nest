@@ -1,12 +1,17 @@
-import { User } from 'src/users/infrastructure/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  RelationId,
 } from 'typeorm';
+import { User } from '../../../users/infrastructure/entities/user.entity';
+import { Category } from '../../../categories/infrastructure/entities/category.entity';
+import { Lesson } from 'src/lessons/infrastructure/entities/lessons.entity';
 
 @Entity('courses')
 export class Course {
@@ -23,13 +28,21 @@ export class Course {
   thumbnail: string;
 
   @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'instructorId' })
   instructor: User;
 
-  @Column()
+  @RelationId((course: Course) => course.instructor)
   instructorId: string;
 
-  @Column()
+  @ManyToOne(() => Category, (c) => c.courses, { eager: true, nullable: true })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
+
+  @RelationId((course: Course) => course.category)
   categoryId: string;
+
+  @OneToMany(() => Lesson, (l) => l.course)
+  lessons: Lesson[];
 
   @CreateDateColumn()
   createdAt: Date;

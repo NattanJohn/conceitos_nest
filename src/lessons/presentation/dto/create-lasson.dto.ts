@@ -1,23 +1,19 @@
 import { IsNotEmpty, IsString, IsUUID, IsOptional } from 'class-validator';
 
-export class CreateCourseDto {
+export class CreateLessonDto {
   @IsNotEmpty()
   @IsString()
   title: string;
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  content: string;
 
   @IsOptional()
   @IsString()
-  thumbnail?: string;
+  videoUrl?: string;
 
   @IsNotEmpty()
   @IsUUID()
-  instructorId: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  categoryId: string;
+  courseId: string;
 }

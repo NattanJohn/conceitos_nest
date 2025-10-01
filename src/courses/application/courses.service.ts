@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateCourseDto } from '../presentation/dto/create-course.dto';
 import { UpdateCourseDto } from '../presentation/dto/update-course.dto';
 import { Course } from '../infrasctruture/entities/course.entity';
+import { Category } from 'src/categories/infrastructure/entities/category.entity';
+import { User } from 'src/users/infrastructure/entities/user.entity';
 
 @Injectable()
 export class CoursesService {
@@ -21,7 +23,26 @@ export class CoursesService {
   }
 
   async create(dto: CreateCourseDto): Promise<Course> {
-    const newCourse = this.coursesRepository.create(dto);
+    const instructor = await this.coursesRepository.manager.findOne(User, {
+      where: { id: dto.instructorId },
+    });
+    if (!instructor) {
+      throw new NotFoundException('Instrutor não encontrado');
+    }
+
+    const category = await this.coursesRepository.manager.findOne(Category, {
+      where: { id: dto.categoryId },
+    });
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    const newCourse = this.coursesRepository.create({
+      ...dto,
+      instructor,
+      category,
+    });
+
     return await this.coursesRepository.save(newCourse);
   }
 

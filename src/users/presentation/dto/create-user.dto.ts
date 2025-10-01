@@ -9,7 +9,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'O email é obrigatório' })
   readonly email: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'A senha é obrigatória' })
   @MinLength(6)
   password: string;
 

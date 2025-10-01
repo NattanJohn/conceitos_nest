@@ -1,30 +1,23 @@
+import { Course } from 'src/courses/infrasctruture/entities/course.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('categories')
+export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, unique: true })
   name: string;
 
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @Column({ default: false })
-  isActive: boolean;
-
-  @Column({ default: 'user' })
-  role: string;
+  @OneToMany(() => Course, (course) => course.categoryId)
+  courses: Course[];
 
   @CreateDateColumn()
   createdAt: Date;

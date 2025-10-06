@@ -6,6 +6,7 @@ import { CoursesModule } from './courses/courses.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/category.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LessonsModule } from './lessons/lessons.module';
     CoursesModule,
     CategoriesModule,
     LessonsModule,
+    EnrollmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

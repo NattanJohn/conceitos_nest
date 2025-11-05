@@ -8,6 +8,7 @@ import { CoursesModule } from './courses/courses.module';
 import { CategoriesModule } from './categories/category.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: process.env.DB_TYPE as 'postgres',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT!, 10),
       username: process.env.DB_USERNAME,
@@ -30,6 +31,7 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
     CategoriesModule,
     LessonsModule,
     EnrollmentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

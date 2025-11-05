@@ -1,9 +1,19 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from '../infrastructure/entities/category.entity';
 import { CategoriesService } from '../application/category.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('categories')
 export class CategoriesController {
@@ -14,6 +24,7 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() dto: CreateCategoryDto): Promise<Category> {
     return this.categoriesService.create(dto);
@@ -24,6 +35,7 @@ export class CategoriesController {
     return this.categoriesService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -32,6 +44,7 @@ export class CategoriesController {
     return this.categoriesService.update(id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<Category> {
     return this.categoriesService.remove(id);

@@ -1,8 +1,19 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Lesson } from '../infrastructure/entities/lessons.entity';
 import { CreateLessonDto } from './dto/create-lasson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { LessonsService } from '../application/lessons.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('lessons')
 export class LessonsController {
@@ -13,6 +24,7 @@ export class LessonsController {
     return this.lessonsService.findAll();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() dto: CreateLessonDto): Promise<Lesson> {
     return this.lessonsService.create(dto);
@@ -23,11 +35,13 @@ export class LessonsController {
     return this.lessonsService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateLessonDto): Promise<Lesson> {
     return this.lessonsService.update(id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<Lesson> {
     return this.lessonsService.remove(id);

@@ -1,16 +1,31 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from '@nestjs/common';
+import type { Request } from 'express';
 import { UsersService } from '../application/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../infrastructure/entities/user.entity';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../auth/domain/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/infrastructure/guards/roles.guards';
+import { Roles } from '../../auth/infrastructure/decorators/roles.decorator';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
+  @Roles('admin')
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
@@ -20,20 +35,37 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+  @Roles('admin', 'teacher', 'student')
+  async findOne(@Param('id') id: string, @Req() req: Request): Promise<User> {
+    const user = await this.usersService.findOne(id);
+    const currentUser = req.user as { sub: string; role: string };
+
+    if (currentUser.role !== 'admin' && currentUser.sub !== user.id) {
+      throw new ForbiddenException('Você não tem permissão para ver este perfil');
+    }
+
+    return user;
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+  @Roles('admin', 'teacher', 'student')
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: Request,
+  ): Promise<User> {
+    const currentUser = req.user as { sub: string; role: string };
+
+    if (currentUser.role !== 'admin' && currentUser.sub !== id) {
+      throw new ForbiddenException('Você não tem permissão para atualizar este perfil');
+    }
+
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
+  @Roles('admin')
   remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
   }

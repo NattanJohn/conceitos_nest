@@ -1,32 +1,35 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { EnrollmentsService } from '../application/enrollments.service';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { Enrollment } from '../infrastructure/entities/enrollment.entity';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../auth/domain/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/infrastructure/guards/roles.guards';
+import { Roles } from '../../auth/infrastructure/decorators/roles.decorator';
 
 @Controller('enrollments')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'teacher')
   @Get()
   findAll(): Promise<Enrollment[]> {
     return this.enrollmentsService.findAll();
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'teacher', 'student')
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Enrollment> {
     return this.enrollmentsService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'teacher')
   @Post()
   create(@Body() createEnrollmentDto: CreateEnrollmentDto): Promise<Enrollment> {
     return this.enrollmentsService.create(createEnrollmentDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string): Promise<Enrollment> {
     return this.enrollmentsService.remove(id);

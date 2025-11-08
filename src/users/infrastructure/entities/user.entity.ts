@@ -28,6 +28,9 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
+  @Column({ type: 'text', nullable: true })
+  refreshToken: string | null;
+
   @OneToMany(() => Enrollment, (enrollment) => enrollment.user)
   enrollments: Enrollment[];
 

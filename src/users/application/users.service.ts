@@ -64,4 +64,13 @@ export class UsersService {
     await this.usersRepository.remove(user);
     return user;
   }
+
+  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+    await this.usersRepository.update(userId, { refreshToken: hashedToken });
+  }
+
+  async removeRefreshToken(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, { refreshToken: null });
+  }
 }

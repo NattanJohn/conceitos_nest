@@ -16,7 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async validate(payload: { sub: number; email: string; role: string }) {
-    // ✅ Tipagem explícita evita o erro de 'any'
     return { userId: payload.sub, email: payload.email, role: payload.role };
   }
 }

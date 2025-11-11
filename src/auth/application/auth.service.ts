@@ -30,6 +30,9 @@ export class AuthService {
   }
 
   async login(user: User) {
+    if (user.isActive === false) {
+      throw new UnauthorizedException('Usuário desativado. Entre em contato com o administrador.');
+    }
     const payload = { sub: user.id, email: user.email, role: user.role };
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
@@ -56,6 +59,12 @@ export class AuthService {
 
       if (!user || !user.refreshToken) {
         throw new UnauthorizedException('Token inválido');
+      }
+
+      if (user.isActive === false) {
+        throw new UnauthorizedException(
+          'Usuário desativado. Entre em contato com o administrador.',
+        );
       }
 
       const isTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);

@@ -31,6 +31,7 @@ export class UsersService {
     const newUser = this.usersRepository.create({
       ...dto,
       password: hashedPassword,
+      isActive: true,
     });
 
     return await this.usersRepository.save(newUser);

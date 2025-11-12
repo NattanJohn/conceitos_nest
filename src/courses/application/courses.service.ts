@@ -6,6 +6,8 @@ import { UpdateCourseDto } from '../presentation/dto/update-course.dto';
 import { Course } from '../infrasctruture/entities/course.entity';
 import { Category } from 'src/categories/infrastructure/entities/category.entity';
 import { User } from 'src/users/infrastructure/entities/user.entity';
+import { existsSync, unlinkSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class CoursesService {
@@ -64,5 +66,28 @@ export class CoursesService {
     const course = await this.findOne(id);
     await this.coursesRepository.remove(course);
     return course;
+  }
+  async updateThumbnail(id: string, filename: string): Promise<Course> {
+    const course = await this.findOne(id); // já lança NotFound se não existir
+
+    const uploadDir = join(process.cwd(), 'uploads', 'courses');
+
+    if (course.thumbnail) {
+      try {
+        const oldPath = join(uploadDir, course.thumbnail);
+        if (existsSync(oldPath)) {
+          unlinkSync(oldPath);
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.warn('Erro ao deletar thumb antiga:', error.message);
+        } else {
+          console.warn('Erro ao deletar thumb antiga (valor inesperado):', String(error));
+        }
+      }
+    }
+
+    course.thumbnail = filename;
+    return this.coursesRepository.save(course);
   }
 }

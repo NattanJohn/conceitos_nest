@@ -6,11 +6,20 @@ import { AuthController } from './presentation/auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PasswordReset } from './domain/entities/password-reset.entity';
+import { User } from 'src/users/infrastructure/entities/user.entity';
+import { MailModule } from 'src/mail/mail.module';
+import { PasswordResetController } from './presentation/reset-password.controller';
+import { PasswordResetService } from './application/reset-password.service';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    ConfigModule,
+    MailModule,
+    TypeOrmModule.forFeature([PasswordReset, User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,8 +36,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       },
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  controllers: [AuthController, PasswordResetController],
+  providers: [AuthService, JwtStrategy, PasswordResetService],
+  exports: [AuthService, PassportModule],
 })
 export class AuthModule {}

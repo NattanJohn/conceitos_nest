@@ -36,10 +36,20 @@ export function courseMulterOptions(): MulterOptions {
       cb: (error: Error | null, acceptFile: boolean) => void,
     ) => {
       const allowed = ['.png', '.jpg', '.jpeg', '.webp'];
+      const allowedMime = ['image/png', 'image/jpeg', 'image/webp'];
+      const mime = file.mimetype;
       const ext = extname(file.originalname).toLowerCase();
       if (!allowed.includes(ext)) {
         return cb(new Error('Tipo de arquivo inválido. Use png/jpg/jpeg/webp'), false);
       }
+
+      if (!allowedMime.includes(mime)) {
+        return cb(
+          new Error('Tipo de arquivo inválido (MIME). Envie apenas imagens válidas'),
+          false,
+        );
+      }
+
       cb(null, true);
     },
   };

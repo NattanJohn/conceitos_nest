@@ -1,5 +1,5 @@
-import { Course } from 'src/courses/infrasctruture/entities/course.entity';
-import { User } from 'src/users/infrastructure/entities/user.entity';
+import { Course } from '../../../courses/infrasctruture/entities/course.entity';
+import { User } from '../../../users/infrastructure/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

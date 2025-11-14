@@ -1,4 +1,4 @@
-import { Enrollment } from 'src/enrollments/infrastructure/entities/enrollment.entity';
+import { Enrollment } from '../../../enrollments/infrastructure/entities/enrollment.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -33,7 +33,6 @@ export class User {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.user)
   enrollments: Enrollment[];
-
   @CreateDateColumn()
   createdAt: Date;
 

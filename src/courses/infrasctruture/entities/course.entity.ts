@@ -11,8 +11,8 @@ import {
 } from 'typeorm';
 import { User } from '../../../users/infrastructure/entities/user.entity';
 import { Category } from '../../../categories/infrastructure/entities/category.entity';
-import { Lesson } from 'src/lessons/infrastructure/entities/lessons.entity';
-import { Enrollment } from 'src/enrollments/infrastructure/entities/enrollment.entity';
+import { Lesson } from '../../../lessons/infrastructure/entities/lessons.entity';
+import { Enrollment } from '../../../enrollments/infrastructure/entities/enrollment.entity';
 
 @Entity('courses')
 export class Course {

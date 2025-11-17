@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Lesson } from '../infrastructure/entities/lessons.entity';
 import { CreateLessonDto } from '../presentation/dto/create-lasson.dto';
-import { Course } from 'src/courses/infrasctruture/entities/course.entity';
+import { Course } from '../../courses/infrasctruture/entities/course.entity';
 import { UpdateLessonDto } from '../presentation/dto/update-lesson.dto';
 
 @Injectable()

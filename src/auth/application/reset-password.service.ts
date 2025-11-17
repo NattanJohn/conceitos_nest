@@ -4,7 +4,7 @@ import { PasswordReset } from '../domain/entities/password-reset.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../../mail/application/mail.service';
-import { User } from 'src/users/infrastructure/entities/user.entity';
+import { User } from '../../users/infrastructure/entities/user.entity';
 
 @Injectable()
 export class PasswordResetService {
@@ -33,7 +33,6 @@ export class PasswordResetService {
 
     await this.resetRepo.save(reset);
 
-    // ✅ agora chamamos o método que já envia com o resetLink
     await this.mailService.sendPasswordResetMail(user.email, user.name, code);
 
     return { message: 'Código enviado para o e-mail.' };

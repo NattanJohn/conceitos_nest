@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateCourseDto } from '../presentation/dto/create-course.dto';
 import { UpdateCourseDto } from '../presentation/dto/update-course.dto';
 import { Course } from '../infrasctruture/entities/course.entity';
-import { Category } from 'src/categories/infrastructure/entities/category.entity';
-import { User } from 'src/users/infrastructure/entities/user.entity';
+import { Category } from '../../categories/infrastructure/entities/category.entity';
+import { User } from '../../users/infrastructure/entities/user.entity';
 import { existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 
